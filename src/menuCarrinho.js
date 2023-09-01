@@ -28,11 +28,13 @@ export function inicializarCarrinho(){
 
 function removerDoCarrinho(idProduto){
   delete idsProdutoCarrinhoComQuantidade[idProduto];
+  atualizarPrecoCarrinho();
   renderizarProdutosCarrinho();
 }
 
 function incrementarQuantidadeProduto(idProduto){
   idsProdutoCarrinhoComQuantidade[idProduto]++;
+  atualizarPrecoCarrinho();
   atualizarInformacaoQuantidade(idProduto);
 }
 
@@ -42,6 +44,7 @@ function decrementarQuantidadeProduto(idProduto){
     return;
   }
   idsProdutoCarrinhoComQuantidade[idProduto]--;
+  atualizarPrecoCarrinho();
   atualizarInformacaoQuantidade(idProduto);
 }
 
@@ -59,13 +62,17 @@ function desenharProdutoNoCarrinho(idProduto){
   for (const articleClass of articleClasses){
     elementoArticle.classList.add(articleClass);
   }
+
+  let precoFormatado = produto.preco.toFixed(2);
+  precoFormatado = precoFormatado.replace('.',',');
+
   
   const cartaoProdutoCarrinho = `<button id="remover-item-${produto.id}" class=" absolute top-0 right-2"><i class="fa-solid fa-circle-xmark text-slate-500 hover:text-slate-800"></i></button>
   <img src="./assets/img/${produto.imagem}" alt="Carrinho: ${produto.nome} - ${produto.marca}" class="h-24 rounded-lg">
   <div class="p-2 flex flex-col justify-between">
     <p class="text-slate-900 text-sm">${produto.nome}</p>
     <p class="text-slate-400 text-xs">Tamanho: ${produto.tamanho}</p>
-    <p class="text-green-700 text-lg">R$${produto.preco}</p>
+    <p class="text-green-700 text-lg">R$${precoFormatado}</p>
   </div>
   <div class="flex text-slate-950 items-end absolute bottom-0 right-2 text-lg">
     <button id='decrementar-produto-${produto.id}'>-</button>
@@ -98,4 +105,21 @@ export function adicionarAoCarrinho(idProduto){
   }
   idsProdutoCarrinhoComQuantidade[idProduto] = 1;
   desenharProdutoNoCarrinho(idProduto); 
+  atualizarPrecoCarrinho();
+}
+
+function atualizarPrecoCarrinho(){
+  const precoCarrinho = document.getElementById('preco-total');
+  let precoTotalCarrinho = 0;
+
+  for(const idProdutoNoCarrinho in idsProdutoCarrinhoComQuantidade){
+    precoTotalCarrinho += catalogo.find(p => p.id === idProdutoNoCarrinho).preco * idsProdutoCarrinhoComQuantidade[idProdutoNoCarrinho];
+  }
+
+  let precoFormatado = precoTotalCarrinho.toFixed(2);
+  precoFormatado = precoFormatado.replace('.',',');
+
+
+  precoCarrinho.innerText = `Total: R$${precoFormatado}`;
+  //precoCarrinho.innerText = `Total: R$${precoTotalCarrinho}`;
 }
