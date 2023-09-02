@@ -5,7 +5,9 @@ export function renderizarCatalogo(){
   for (const produtoCatalogo of catalogo){
     let precoFormatado = produtoCatalogo.preco.toFixed(2);
     precoFormatado = precoFormatado.replace('.',',');
-    const cartaoProduto = `<div class="border-solid w-48 m-2 flex flex-col p-2 justify-between shadow-xl shadow-slate-400 rounded-lg group" id="card-produto-${produtoCatalogo.id}">
+    // ${produtoCatalogo.suplemento ? 'suplemento' : 'nao-suplemento'}
+    // operador ternario que se for true escolhe o da esquerda
+    const cartaoProduto = `<div class="border-solid w-48 m-2 flex flex-col p-2 justify-between shadow-xl shadow-slate-400 rounded-lg group ${produtoCatalogo.suplemento ? 'suplemento' : 'outros'}" id="card-produto-${produtoCatalogo.id}">
     <img src="./assets/img/${produtoCatalogo.imagem}" alt="${produtoCatalogo.nome} - ${produtoCatalogo.marca}" class="group-hover:scale-110 duration-300 my-3 rounded-lg"/>
     <p class="text-sm">${produtoCatalogo.nome}</p>
     <p class='text-xs'>${produtoCatalogo.marca}</p>

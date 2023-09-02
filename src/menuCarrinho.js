@@ -1,7 +1,8 @@
-import { catalogo } from "./utilidades";
+import { catalogo, lerLocalStorage, salvarLocalStorage } from "./utilidades";
 // Aqui eu vou concentrar a inteligência do Carrinho de compras
 
-const idsProdutoCarrinhoComQuantidade = {};
+//?? o operador escolhe o da esquerda se retorna algo valido
+const idsProdutoCarrinhoComQuantidade = lerLocalStorage('carrinho') ?? {};
 
 // "Código sob demanda"
 function abrirCarrinho(){
@@ -28,12 +29,14 @@ export function inicializarCarrinho(){
 
 function removerDoCarrinho(idProduto){
   delete idsProdutoCarrinhoComQuantidade[idProduto];
+  salvarLocalStorage('carrinho', idsProdutoCarrinhoComQuantidade);
   atualizarPrecoCarrinho();
   renderizarProdutosCarrinho();
 }
 
 function incrementarQuantidadeProduto(idProduto){
   idsProdutoCarrinhoComQuantidade[idProduto]++;
+  salvarLocalStorage('carrinho', idsProdutoCarrinhoComQuantidade);
   atualizarPrecoCarrinho();
   atualizarInformacaoQuantidade(idProduto);
 }
@@ -44,6 +47,7 @@ function decrementarQuantidadeProduto(idProduto){
     return;
   }
   idsProdutoCarrinhoComQuantidade[idProduto]--;
+  salvarLocalStorage('carrinho', idsProdutoCarrinhoComQuantidade);
   atualizarPrecoCarrinho();
   atualizarInformacaoQuantidade(idProduto);
 }
@@ -89,7 +93,7 @@ function desenharProdutoNoCarrinho(idProduto){
   document.getElementById(`remover-item-${produto.id}`).addEventListener('click', () => removerDoCarrinho(produto.id));
 }
 
-function renderizarProdutosCarrinho(){
+export function renderizarProdutosCarrinho(){
   const containerProdutosCarrinho = document.getElementById("produtos-carrinho");
   containerProdutosCarrinho.innerHTML = "";
   
@@ -104,11 +108,12 @@ export function adicionarAoCarrinho(idProduto){
     return;
   }
   idsProdutoCarrinhoComQuantidade[idProduto] = 1;
+  salvarLocalStorage('carrinho', idsProdutoCarrinhoComQuantidade);
   desenharProdutoNoCarrinho(idProduto); 
   atualizarPrecoCarrinho();
 }
 
-function atualizarPrecoCarrinho(){
+export function atualizarPrecoCarrinho(){
   const precoCarrinho = document.getElementById('preco-total');
   let precoTotalCarrinho = 0;
 
